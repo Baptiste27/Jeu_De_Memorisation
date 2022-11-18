@@ -1,0 +1,6 @@
+# Ignore all o and ppu files
+*.o
+*.ppu
+
+# Ignore memo file
+/memo

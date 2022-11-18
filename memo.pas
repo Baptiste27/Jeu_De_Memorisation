@@ -1,6 +1,6 @@
 program memo;
 
-uses sdl, types_memo, sysutils;
+uses sdl, types_memo, sysutils;           // types_memo in 'unit/types_memo.pas'
 
 procedure initialise(var screen : PSDL_Surface);
 begin
@@ -63,9 +63,9 @@ begin
     begin
         i := Aretenir[k].x * w;
         j := Aretenir[k].y * w;
-        fillRect(i, j, w-2, w-2, 150, 0, 150, screen);
+        fillRect(i, j, w-2, w-2, 255, 14, 208, screen);
         SDL_Flip(screen);
-        SDL_Delay(2000);
+        SDL_Delay(1000);
         fillRect(i, j, w-2, w-2, 100, 100, 100, screen);
         SDL_Flip(screen);
     end;
@@ -79,6 +79,7 @@ begin
 end;
 
 function position_souris: Coord;
+{ Converti la position de la souris i j en position d'une cellule de position x y}
 var x, y : Integer;
     i, j : LongInt;
 begin
@@ -90,7 +91,32 @@ begin
 
 end;
 
-procedure boucle_jeu;
+procedure affiche_clique(cell : Coord; screen : PSDL_SURFACE);
+var i, j: Integer;
+begin
+    if flag = True then
+    begin
+        i := cell.x * w;
+        j := cell.y * w;
+        fillRect(i, j, w-2, w-2, 255, 0, 0, screen);
+        SDL_Flip(screen);
+        SDL_Delay(300);
+        fillRect(i, j, w-2, w-2, 100, 100, 100, screen);
+        SDL_Flip(screen);
+    end
+    else 
+    begin
+        i := cell.x * w;
+        j := cell.y * w;
+        fillRect(i, j, w-2, w-2, 51, 255, 255, screen);
+        SDL_Flip(screen);
+        SDL_Delay(100);
+        fillRect(i, j, w-2, w-2, 100, 100, 100, screen);
+        SDL_Flip(screen);
+    end;
+end;
+
+procedure boucle_jeu(screen : PSDL_SURFACE);
 var retenir_restant : Integer;
     event : TSDL_Event;
     suite : Boolean;
@@ -98,6 +124,7 @@ begin
     retenir_restant := 0;
     flag := False;
     suite := False;
+    SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_Enable);
 
     while not suite do            // Tant qu'il y a des cases a retenir ou tant qu'il n'y a pas d'erreur
         begin
@@ -114,6 +141,7 @@ begin
                 end
                 else flag := True;
             end;
+            affiche_clique(position_souris, screen);
             if (retenir_restant = index_Aretenir) or (flag = True) then suite := True;
         end;
 
@@ -121,7 +149,6 @@ end;
 
 var fenetre : PSDL_Surface;
     k : Integer;
-
 begin
     Randomize;
     initialise(fenetre);
@@ -130,15 +157,17 @@ begin
     SDL_Flip(fenetre);
     SDL_Delay(2000);
 
-    for k := 0 to 2 do
+    for k := 0 to 1 do
     begin
         choix_aleatoire;
     end;
     while flag <> True do
     begin
-        choix_aleatoire;
+        SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);            // Evite d'avoir queue de clique avant et pendant l'affichage des cases a retenir
         affichage_Aretenir(fenetre);
-        boucle_jeu;
+        boucle_jeu(fenetre);
+        SDL_Delay(1000);
+        choix_aleatoire;
     end;
     //SDL_Delay(5000);
     if flag = True then writeln('PERDDUUU') else writeln('GGGGAAAAAAGGGGNNNNEEEE');

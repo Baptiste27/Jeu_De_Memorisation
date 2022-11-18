@@ -12,13 +12,13 @@ Type Coord = record
 
 { ~~~~~~~~~~ LES CONSTANTES ~~~~~~~~~~ }
 
-const LARGEUR = 400;
-    HAUTEUR = 400;
+const LARGEUR = 800;
+    HAUTEUR = 800;
     w = 80;
     cols = LARGEUR div w;
     rows = HAUTEUR div w;
     nbCell = cols*rows;
-    Max_a_retenir = 10;
+    Max_a_retenir = 50;
 
 { ~~~~~~~~~~ LES VARIABLES ~~~~~~~~~~ }
 
@@ -28,6 +28,7 @@ var grid : array[0..nbCell-1] of Coord;
     flag : Boolean;
 
 { ~~~~~~~~~~ LES PROCEDURES ~~~~~~~~~~ }
+
 procedure fillRect(x, y, w, h, r, g, b : Integer; screen : PSDL_Surface);
 procedure blitSurface(x, y, w, h : Integer; screen, surface : PSDL_Surface);
 
