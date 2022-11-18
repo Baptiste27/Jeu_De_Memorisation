@@ -90,40 +90,57 @@ begin
 
 end;
 
+procedure boucle_jeu;
+var retenir_restant : Integer;
+    event : TSDL_Event;
+    suite : Boolean;
+begin
+    retenir_restant := 0;
+    flag := False;
+    suite := False;
+
+    while not suite do            // Tant qu'il y a des cases a retenir ou tant qu'il n'y a pas d'erreur
+        begin
+            repeat 
+                SDL_WaitEvent(@event);
+            until (event.type_ = SDL_MOUSEBUTTONDOWN) and (event.button.button = SDL_BUTTON_LEFT);          // Regarde si l'utilisateur a utilisé le clique droit de sa souris
+            if (event.type_ = SDL_MOUSEBUTTONDOWN) then
+            begin
+                writeln('Clique droit');
+                if (position_souris.x = Aretenir[retenir_restant].x) and (position_souris.y = Aretenir[retenir_restant].y) then 
+                begin
+                    retenir_restant := retenir_restant + 1;
+                    writeln(retenir_restant);
+                end
+                else flag := True;
+            end;
+            if (retenir_restant = index_Aretenir) or (flag = True) then suite := True;
+        end;
+
+end;
+
 var fenetre : PSDL_Surface;
     k : Integer;
-    retenir_restant : Integer;
-    event : TSDL_Event;
-    flag : Boolean;
 
 begin
     Randomize;
-    retenir_restant := 0;
-    flag := False;
     initialise(fenetre);
     setup;
     affiche_grid(fenetre);
     SDL_Flip(fenetre);
     SDL_Delay(2000);
 
-    while (retenir_restant <> Aretenir - 1) or (flag <> True) do
-    begin
-        while SDL_WaitEvent(@event) do
-        begin
-            if (event.type_ = SDL_MOUSEBUTTONDOWN) then
-            begin
-                if position_souris = Aretenir[retenir_restant] then retenir_restant := retenir_restant + 1;
-                else flag = True;
-            end;
-        end;
-    end;
-
-
     for k := 0 to 2 do
     begin
         choix_aleatoire;
     end;
-    affichage_Aretenir(fenetre);
-    SDL_Delay(5000);
+    while flag <> True do
+    begin
+        choix_aleatoire;
+        affichage_Aretenir(fenetre);
+        boucle_jeu;
+    end;
+    //SDL_Delay(5000);
+    if flag = True then writeln('PERDDUUU') else writeln('GGGGAAAAAAGGGGNNNNEEEE');
     termine(fenetre);
 end.

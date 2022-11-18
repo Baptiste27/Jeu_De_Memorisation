@@ -25,6 +25,7 @@ const LARGEUR = 400;
 var grid : array[0..nbCell-1] of Coord;
     Aretenir : array[0..Max_a_retenir] of Coord;
     index_Aretenir : Integer;
+    flag : Boolean;
 
 { ~~~~~~~~~~ LES PROCEDURES ~~~~~~~~~~ }
 procedure fillRect(x, y, w, h, r, g, b : Integer; screen : PSDL_Surface);
