@@ -56,7 +56,7 @@ begin
 end;
 
 procedure affichage_Aretenir(var screen : PSDL_SURFACE);
-{ Affiche les cellules à retenir d'une autre couleur pendant un certain temps}
+{ Affiche les cellules à retenir d'une autre couleur pendant un certain temps }
 var k, i, j : Integer;
 begin
     for k := 0 to index_Aretenir - 1 do         // index_Aretenir indique la place de la prochaine cellule dans le tableau Aretenir => - 1
@@ -73,13 +73,13 @@ begin
 end;
 
 function index(x, y : Integer) : Integer;
-{ Calcul l'index de la cellule dans un tableau a 1 dimension}
+{ Calcul l'index de la cellule dans un tableau a 1 dimension }
 begin
     index := x + y * cols;
 end;
 
 function position_souris: Coord;
-{ Converti la position de la souris i j en position d'une cellule de position x y}
+{ Converti la position de la souris i j en position d'une cellule de position x y }
 var x, y : Integer;
     i, j : LongInt;
 begin
@@ -117,11 +117,13 @@ begin
 end;
 
 procedure boucle_jeu(screen : PSDL_SURFACE);
-var retenir_restant : Integer;
+var retenir_restant, i, j : Integer;
     event : TSDL_Event;
     suite : Boolean;
+    avant : Coord;
 begin
     retenir_restant := 0;
+    avant := position_souris;
     flag := False;
     suite := False;
     SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_Enable);
@@ -130,7 +132,22 @@ begin
         begin
             repeat 
                 SDL_WaitEvent(@event);
+                if (position_souris.x = avant.x) and (position_souris.y = avant.y) then
+            begin
+                i := position_souris.x * w;
+                j := position_souris.y * w;
+                fillRect(i, j, w-2, w-2, 160, 160, 160, screen);            // Colore la case sur laquelle le curseur de la souris est
+                SDL_Flip(screen);
+            end
+            else 
+            begin
+                fillRect(i, j, w-2, w-2, 100, 100, 100, screen);            // Colore la case précedente en gris
+                avant := position_souris;
+                SDL_Flip(screen);
+            end;
             until (event.type_ = SDL_MOUSEBUTTONDOWN) and (event.button.button = SDL_BUTTON_LEFT);          // Regarde si l'utilisateur a utilisé le clique droit de sa souris
+
+
             if (event.type_ = SDL_MOUSEBUTTONDOWN) then
             begin
                 writeln('Clique droit');
